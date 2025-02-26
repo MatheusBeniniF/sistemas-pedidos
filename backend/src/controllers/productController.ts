@@ -26,6 +26,9 @@ export async function createProductController(
         .status(400)
         .send({ error: error.errors.map((err) => err.message) });
     }
+    if (error instanceof Error) {
+      return reply.status(400).send({ error: error.message });
+    }
     return reply.status(500).send({ error: "Erro ao criar produto" });
   }
 }
@@ -40,5 +43,57 @@ export async function getAllProductsController(
     return reply.send(products);
   } catch (error) {
     return reply.status(500).send({ error: "Erro ao buscar produtos" });
+  }
+}
+
+export async function deleteProductController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params as { id: number };
+    const productService = new ProductService();
+    const product = await productService.delete(id);
+    return reply.send({ message: "Produto deletado com sucesso!", product });
+  } catch (error) {
+    if (error instanceof Error) {
+      return reply.status(400).send({ error: error.message });
+    }
+    return reply.status(500).send({ error: "Erro ao deletar produto" });
+  }
+}
+
+export async function updateProductController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params as { id: number };
+    const { name, price } = productSchema.parse(request.body as { name: string; price: number });
+    const productService = new ProductService();
+    const product = await productService.update(id, { name, price });
+    return reply.send({ message: "Produto atualizado com sucesso!", product });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return reply.status(400).send({ error: error.errors.map((err) => err.message) });
+    }
+    if (error instanceof Error) {
+      return reply.status(400).send({ error: error.message });
+    }
+    return reply.status(500).send({ error: "Erro ao atualizar produto" });
+  }
+}
+
+export async function getProductsByIdController(
+  request: FastifyRequest,
+  reply: FastifyReply
+) {
+  try {
+    const { id } = request.params as { id: number };
+    const productService = new ProductService();
+    const product = await productService.findById(id);
+    return reply.send(product);
+  } catch (error) {
+    return reply.status(500).send({ error: "Erro ao buscar produto" });
   }
 }

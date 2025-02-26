@@ -1,8 +1,20 @@
 import { FastifyInstance } from "fastify";
-import { createRequestController, getAllRequestsController } from "../controllers/requestController";
+import {
+  createRequestController,
+  deleteRequestController,
+  getAllRequestsController,
+  getRequestByIdController,
+  updateRequestController,
+} from "../controllers/requestController";
 
 export function requestsRoutes(app: FastifyInstance) {
-    app.get("/requests", getAllRequestsController);
+  app.get("/requests/:id", getRequestByIdController);
 
-    app.post("/requests", createRequestController);
+  app.get("/requests", getAllRequestsController);
+
+  app.post("/requests", createRequestController);
+
+  app.put("/requests/:id", updateRequestController);
+
+  app.delete("/requests/:id", deleteRequestController);
 }

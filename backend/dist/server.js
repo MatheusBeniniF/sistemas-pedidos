@@ -11,10 +11,10 @@ const requests_1 = require("./routes/requests");
 const requests_items_1 = require("./routes/requests-items");
 const app = (0, fastify_1.default)();
 app.register(cors_1.default, {
-    origin: "*"
+    origin: "*",
 });
 app.get("/", () => {
-    return 'servidor ok';
+    return "servidor ok";
 });
 app.register(products_1.productsRoutes);
 app.register(clients_1.clientsRoutes);

@@ -49,5 +49,61 @@ class RequestService {
             }
         });
     }
+    update(id, client_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM requests WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Pedido não encontrado");
+                }
+                const [updateResult] = yield connection.execute("UPDATE requests SET client_id = ? WHERE id = ?", [client_id, id]);
+                return updateResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao atualizar pedido");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    delete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM requests WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Pedido não encontrado");
+                }
+                const [deleteResult] = yield connection.execute("DELETE FROM requests WHERE id = ?", [id]);
+                return deleteResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao deletar pedido");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM requests WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Pedido não encontrado");
+                }
+                return rows[0];
+            }
+            catch (error) {
+                throw new Error("Erro ao buscar pedido");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
 }
 exports.RequestService = RequestService;

@@ -52,5 +52,65 @@ class ClientsService {
             }
         });
     }
+    update(id, client) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM clients WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Cliente não encontrado");
+                }
+                const [updateResult] = yield connection.execute("UPDATE clients SET name = ?, email = ? WHERE id = ?", [
+                    client.name,
+                    client.email,
+                    id
+                ]);
+                return updateResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao atualizar cliente");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    delete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM clients WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Cliente não encontrado");
+                }
+                const [deleteResult] = yield connection.execute("DELETE FROM clients WHERE id = ?", [id]);
+                return deleteResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao deletar cliente");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM clients WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Cliente não encontrado");
+                }
+                return rows[0];
+            }
+            catch (error) {
+                throw new Error("Erro ao buscar cliente");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
 }
 exports.ClientsService = ClientsService;

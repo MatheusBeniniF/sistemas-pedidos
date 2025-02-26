@@ -11,6 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllClientsController = getAllClientsController;
 exports.createClientController = createClientController;
+exports.updateClientController = updateClientController;
+exports.deleteClientController = deleteClientController;
+exports.getClientByIdController = getClientByIdController;
 const clientsService_1 = require("../services/clientsService");
 const zod_1 = require("zod");
 const clientSchema = zod_1.z.object({
@@ -48,7 +51,62 @@ function createClientController(request, reply) {
             if (error instanceof zod_1.z.ZodError) {
                 return reply.status(400).send({ error: error.errors.map((err) => err.message) });
             }
+            if (error instanceof Error) {
+                return reply.status(400).send({ error: error.message });
+            }
             return reply.status(500).send({ error: "Erro ao criar cliente" });
+        }
+    });
+}
+function updateClientController(request, reply) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { id } = request.params;
+            const { name, email } = clientSchema.parse(request.body);
+            const clientService = new clientsService_1.ClientsService();
+            const client = yield clientService.update(id, { name, email });
+            return reply.send({ message: "Cliente atualizado com sucesso!", client });
+        }
+        catch (error) {
+            if (error instanceof zod_1.z.ZodError) {
+                return reply.status(400).send({ error: error.errors.map((err) => err.message) });
+            }
+            if (error instanceof Error) {
+                return reply.status(400).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: "Erro ao atualizar cliente" });
+        }
+    });
+}
+function deleteClientController(request, reply) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { id } = request.params;
+            const clientService = new clientsService_1.ClientsService();
+            const client = yield clientService.delete(id);
+            return reply.send({ message: "Cliente deletado com sucesso!", client });
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return reply.status(400).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: "Erro ao deletar cliente" });
+        }
+    });
+}
+function getClientByIdController(request, reply) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { id } = request.params;
+            const clientService = new clientsService_1.ClientsService();
+            const client = yield clientService.findById(id);
+            return reply.send(client);
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                return reply.status(400).send({ error: error.message });
+            }
+            return reply.status(500).send({ error: "Erro ao buscar cliente" });
         }
     });
 }

@@ -18,14 +18,15 @@ class RequestsItemService {
             try {
                 const [rows] = yield connection.execute("SELECT * FROM requests_item");
                 return {
-                    requests_item: rows
+                    requests_item: rows,
                 };
             }
             catch (error) {
-                throw new Error("Erro ao buscar produtos");
+                console.error("Erro ao buscar itens do pedido:", error);
+                throw new Error("Erro ao buscar itens do pedido");
             }
             finally {
-                connection.end();
+                yield connection.end();
             }
         });
     }
@@ -33,17 +34,73 @@ class RequestsItemService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO requests_item (request_id, product_id, quantity, price) VALUES (?, ?, ?, ?)", [request_id, product_id, quantity, price]);
+                const [result] = yield connection.execute("INSERT INTO requests_item (request_id, product_id, quantity, price) VALUES (?, ?, ?, ?)", [request_id, product_id, quantity, price]);
                 return {
-                    id: rows.insertId,
+                    id: result.insertId,
                     request_id,
                     product_id,
                     quantity,
-                    price
+                    price,
                 };
             }
             catch (error) {
                 throw new Error("Erro ao criar item do pedido");
+            }
+            finally {
+                yield connection.end();
+            }
+        });
+    }
+    delete(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Item do pedido não encontrado");
+                }
+                const [deleteResult] = yield connection.execute("DELETE FROM requests_item WHERE id = ?", [id]);
+                return deleteResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao deletar item do pedido");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    update(id, request_id, product_id, quantity) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Item do pedido não encontrado");
+                }
+                const [updateResult] = yield connection.execute("UPDATE requests_item SET request_id = ?, product_id = ?, quantity = ? WHERE id = ?", [request_id, product_id, quantity, id]);
+                return updateResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao atualizar item do pedido");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    findById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Item do pedido não encontrado");
+                }
+                return rows[0];
+            }
+            catch (error) {
+                throw new Error("Erro ao buscar item do pedido");
             }
             finally {
                 connection.end();

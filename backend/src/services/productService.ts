@@ -5,13 +5,22 @@ export class ProductService {
   async register(name: string, price: number) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.ResultSetHeader>(
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM products WHERE name = ?",
+        [name]
+      )
+
+      if (rows.length > 0) {
+        throw new Error("Produto já cadastrado");
+      }
+
+      const [insertResult] = await connection.execute<mysql.ResultSetHeader>(
         "INSERT INTO products (name, price) VALUES (?, ?)",
         [name, price]
       );
 
       return {
-        id: rows.insertId,
+        id: insertResult.insertId,
         name,
         price,
       };
@@ -38,16 +47,67 @@ export class ProductService {
     }
   }
 
-  async findById(id: number) {
+  async findById(product_id: number) {
+    const connection = await createConnection();
+    try {
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM products WHERE id = ?",
+        [product_id]
+      );
+
+      if (rows.length === 0) {
+        return null;
+      }
+
+      return rows[0];
+    } catch (error) {
+      console.error("Erro ao buscar produto:", error);
+      throw new Error("Erro ao buscar produto");
+    } finally {
+      await connection.end();
+    }
+  }
+
+  async delete(id: number) {
     const connection = await createConnection();
     try {
       const [rows] = await connection.execute<mysql.RowDataPacket[]>(
         "SELECT * FROM products WHERE id = ?",
         [id]
       );
-      return rows[0];
+      if (rows.length === 0) {
+        throw new Error("Produto não encontrado");
+      }
+      const [deleteResult] = await connection.execute<mysql.ResultSetHeader>(
+        "DELETE FROM products WHERE id = ?",
+        [id]
+      );
+
+      return deleteResult;
     } catch (error) {
-      throw new Error("Erro ao buscar produto");
+      throw new Error("Erro ao deletar produto");
+    } finally {
+      connection.end();
+    }
+  }
+
+  async update(id: number, product: { name: string; price: number }) {
+    const connection = await createConnection();
+    try {
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM products WHERE id = ?",
+        [id]
+      );
+      if (rows.length === 0) {
+        throw new Error("Produto não encontrado");
+      }
+      const [updateResult] = await connection.execute<mysql.ResultSetHeader>(
+        "UPDATE products SET name = ?, price = ? WHERE id = ?",
+        [product.name, product.price, id]
+      );
+      return updateResult;
+    } catch (error) {
+      throw new Error("Erro ao atualizar produto");
     } finally {
       connection.end();
     }

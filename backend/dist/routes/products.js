@@ -13,7 +13,10 @@ exports.productsRoutes = productsRoutes;
 const productController_1 = require("../controllers/productController");
 function productsRoutes(app) {
     return __awaiter(this, void 0, void 0, function* () {
+        app.get("/products/:id", productController_1.getProductsByIdController);
         app.get("/products", productController_1.getAllProductsController);
         app.post("/products", productController_1.createProductController);
+        app.put("/products/:id", productController_1.updateProductController);
+        app.delete("/products/:id", productController_1.deleteProductController);
     });
 }

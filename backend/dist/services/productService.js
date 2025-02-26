@@ -16,14 +16,15 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO products (name, price) VALUES (?, ?)", [
-                    name,
-                    price
-                ]);
+                const [rows] = yield connection.execute("SELECT * FROM products WHERE name = ?", [name]);
+                if (rows.length > 0) {
+                    throw new Error("Produto já cadastrado");
+                }
+                const [insertResult] = yield connection.execute("INSERT INTO products (name, price) VALUES (?, ?)", [name, price]);
                 return {
-                    id: rows.insertId,
+                    id: insertResult.insertId,
                     name,
-                    price
+                    price,
                 };
             }
             catch (error) {
@@ -40,7 +41,7 @@ class ProductService {
             try {
                 const [rows] = yield connection.execute("SELECT * FROM products");
                 return {
-                    products: rows
+                    products: rows,
                 };
             }
             catch (error) {
@@ -51,15 +52,57 @@ class ProductService {
             }
         });
     }
-    findById(id) {
+    findById(product_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM products WHERE id = ?", [product_id]);
+                if (rows.length === 0) {
+                    return null;
+                }
+                return rows[0];
+            }
+            catch (error) {
+                console.error("Erro ao buscar produto:", error);
+                throw new Error("Erro ao buscar produto");
+            }
+            finally {
+                yield connection.end();
+            }
+        });
+    }
+    delete(id) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
                 const [rows] = yield connection.execute("SELECT * FROM products WHERE id = ?", [id]);
-                return rows[0];
+                if (rows.length === 0) {
+                    throw new Error("Produto não encontrado");
+                }
+                const [deleteResult] = yield connection.execute("DELETE FROM products WHERE id = ?", [id]);
+                return deleteResult;
             }
             catch (error) {
-                throw new Error("Erro ao buscar produto");
+                throw new Error("Erro ao deletar produto");
+            }
+            finally {
+                connection.end();
+            }
+        });
+    }
+    update(id, product) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
+            try {
+                const [rows] = yield connection.execute("SELECT * FROM products WHERE id = ?", [id]);
+                if (rows.length === 0) {
+                    throw new Error("Produto não encontrado");
+                }
+                const [updateResult] = yield connection.execute("UPDATE products SET name = ?, price = ? WHERE id = ?", [product.name, product.price, id]);
+                return updateResult;
+            }
+            catch (error) {
+                throw new Error("Erro ao atualizar produto");
             }
             finally {
                 connection.end();
