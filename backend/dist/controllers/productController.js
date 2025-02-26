@@ -11,26 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createProductController = createProductController;
 exports.getAllProductsController = getAllProductsController;
-const productService_1 = require("../services/productService");
 const zod_1 = require("zod");
+const productService_1 = require("../services/productService");
 const productSchema = zod_1.z.object({
     name: zod_1.z
         .string()
         .min(1, "Nome é obrigatório")
-        .trim()
-        .refine((val) => val !== "", {
-        message: "Nome não pode ser vazio",
-    }),
+        .trim(),
     price: zod_1.z
         .preprocess((val) => Number(val), zod_1.z.number().positive("Preço deve ser um número positivo"))
-        .refine((val) => val >= 0, { message: "Preço não pode ser negativo" }),
 });
 function createProductController(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { name, price } = productSchema.parse(request.body);
-            yield productService_1.productService.createProduct(name, price);
-            return reply.send({ message: "Produto criado com sucesso!" });
+            const productService = new productService_1.ProductService();
+            const product = yield productService.register(name, price);
+            return reply.send({ message: "Produto criado com sucesso!", product });
         }
         catch (error) {
             if (error instanceof zod_1.z.ZodError) {
@@ -41,10 +38,11 @@ function createProductController(request, reply) {
         }
     });
 }
-function getAllProductsController(request, reply) {
+function getAllProductsController(_request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const products = yield productService_1.productService.getAllProducts();
+            const productService = new productService_1.ProductService();
+            const products = yield productService.getAllProducts();
             return reply.send(products);
         }
         catch (error) {

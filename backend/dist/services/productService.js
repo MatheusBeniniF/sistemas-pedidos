@@ -8,35 +8,50 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productService = void 0;
-const database_1 = __importDefault(require("../database"));
-exports.productService = {
-    createProduct(name, price) {
+exports.ProductService = void 0;
+const database_1 = require("../database");
+class ProductService {
+    register(name, price) {
         return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
             try {
-                yield database_1.default.query("INSERT INTO produtos (nome, preco) VALUES (?, ?)", [
+                const [rows] = yield connection.execute("INSERT INTO produtos (nome, preco) VALUES (?, ?)", [
                     name,
-                    price,
+                    price
                 ]);
+                return {
+                    id: rows.insertId,
+                    name,
+                    price
+                };
             }
             catch (error) {
                 throw new Error("Erro ao inserir produto no banco");
             }
+            finally {
+                connection.end();
+            }
         });
-    },
+    }
     getAllProducts() {
         return __awaiter(this, void 0, void 0, function* () {
+            const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield database_1.default.query("SELECT * FROM produtos");
-                return rows;
+                const [rows] = yield connection.execute("SELECT * FROM Produtos");
+                console.log(rows); // Adicione isso para ver os dados retornados
+                return {
+                    products: rows
+                };
             }
             catch (error) {
+                console.error("Error fetching products:", error); // Adicione isso para mais informações sobre o erro
                 throw new Error("Erro ao buscar produtos");
             }
+            finally {
+                connection.end();
+            }
         });
-    },
-};
+    }
+}
+exports.ProductService = ProductService;
