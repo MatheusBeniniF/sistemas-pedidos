@@ -5,7 +5,7 @@ export class ClientsService {
   async getAllClients() {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clientes");
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients");
       return {
         clients: rows
       };
@@ -19,7 +19,7 @@ export class ClientsService {
   async register(client: { name: string; email: string }) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO clientes (nome, email) VALUES (?, ?)", [
+      const [rows] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO clients (name, email) VALUES (?, ?)", [
         client.name,
         client.email
       ]);

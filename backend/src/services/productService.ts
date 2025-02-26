@@ -5,7 +5,7 @@ export class ProductService {
   async register(name: string, price: number) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO produtos (nome, preco) VALUES (?, ?)", [
+      const [rows] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO products (name, price) VALUES (?, ?)", [
         name,
         price
       ])
@@ -27,7 +27,7 @@ export class ProductService {
   async getAllProducts() {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM produtos");
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM products");
       return {
         products: rows
       };

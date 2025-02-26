@@ -9,11 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.productsRoutes = productsRoutes;
-const productController_1 = require("../controllers/productController");
-function productsRoutes(app) {
+exports.getAllRequestsController = getAllRequestsController;
+const requestsService_1 = require("../services/requestsService");
+function getAllRequestsController(_request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
-        app.get("/products", productController_1.getAllProductsController);
-        app.post("/products", productController_1.createProductController);
+        try {
+            const requestService = new requestsService_1.RequestService();
+            const requests = yield requestService.getAllProducts();
+            return reply.send(requests);
+        }
+        catch (error) {
+            return reply.status(500).send({ error: "Erro ao buscar produtos" });
+        }
     });
 }

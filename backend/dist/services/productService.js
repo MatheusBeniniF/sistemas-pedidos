@@ -16,7 +16,7 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO produtos (nome, preco) VALUES (?, ?)", [
+                const [rows] = yield connection.execute("INSERT INTO products (name, price) VALUES (?, ?)", [
                     name,
                     price
                 ]);
@@ -38,7 +38,7 @@ class ProductService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("SELECT * FROM produtos");
+                const [rows] = yield connection.execute("SELECT * FROM products");
                 return {
                     products: rows
                 };
