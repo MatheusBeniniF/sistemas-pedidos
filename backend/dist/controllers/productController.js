@@ -33,7 +33,6 @@ function createProductController(request, reply) {
             if (error instanceof zod_1.z.ZodError) {
                 return reply.status(400).send({ error: error.errors.map((err) => err.message) });
             }
-            console.error("Error creating product: ", error);
             return reply.status(500).send({ error: "Erro ao criar produto" });
         }
     });
@@ -46,7 +45,6 @@ function getAllProductsController(_request, reply) {
             return reply.send(products);
         }
         catch (error) {
-            console.error("Error fetching products: ", error);
             return reply.status(500).send({ error: "Erro ao buscar produtos" });
         }
     });

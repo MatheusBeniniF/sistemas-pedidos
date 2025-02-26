@@ -27,13 +27,11 @@ export class ProductService {
   async getAllProducts() {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM Produtos");
-      console.log(rows);  // Adicione isso para ver os dados retornados
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM produtos");
       return {
         products: rows
       };
     } catch (error) {
-      console.error("Error fetching products:", error);  // Adicione isso para mais informações sobre o erro
       throw new Error("Erro ao buscar produtos");
     } finally {
       connection.end();

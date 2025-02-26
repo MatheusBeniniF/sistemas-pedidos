@@ -25,7 +25,6 @@ export async function createProductController(
     if (error instanceof z.ZodError) {
       return reply.status(400).send({ error: error.errors.map((err) => err.message) });
     }
-    console.error("Error creating product: ", error);
     return reply.status(500).send({ error: "Erro ao criar produto" });
   }
 }
@@ -39,7 +38,6 @@ export async function getAllProductsController(
     const products = await productService.getAllProducts();
     return reply.send(products);
   } catch (error) {
-    console.error("Error fetching products: ", error);
     return reply.status(500).send({ error: "Erro ao buscar produtos" });
   }
   

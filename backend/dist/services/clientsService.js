@@ -9,42 +9,42 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductService = void 0;
+exports.ClientsService = void 0;
 const database_1 = require("../database");
-class ProductService {
-    register(name, price) {
+class ClientsService {
+    getAllClients() {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO produtos (nome, preco) VALUES (?, ?)", [
-                    name,
-                    price
-                ]);
+                const [rows] = yield connection.execute("SELECT * FROM clientes");
                 return {
-                    id: rows.insertId,
-                    name,
-                    price
+                    clients: rows
                 };
             }
             catch (error) {
-                throw new Error("Erro ao inserir produto no banco");
+                throw new Error("Erro ao buscar clientes");
             }
             finally {
                 connection.end();
             }
         });
     }
-    getAllProducts() {
+    register(client) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("SELECT * FROM produtos");
+                const [rows] = yield connection.execute("INSERT INTO clientes (nome, email) VALUES (?, ?)", [
+                    client.name,
+                    client.email
+                ]);
                 return {
-                    products: rows
+                    id: rows.insertId,
+                    name: client.name,
+                    email: client.email
                 };
             }
             catch (error) {
-                throw new Error("Erro ao buscar produtos");
+                throw new Error("Erro ao inserir cliente no banco");
             }
             finally {
                 connection.end();
@@ -52,4 +52,4 @@ class ProductService {
         });
     }
 }
-exports.ProductService = ProductService;
+exports.ClientsService = ClientsService;
