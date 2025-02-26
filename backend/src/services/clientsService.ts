@@ -29,6 +29,7 @@ export class ClientsService {
         email: client.email
       };
     } catch (error) {
+        console.error(error);
       throw new Error("Erro ao inserir cliente no banco");
     } finally {
       connection.end();

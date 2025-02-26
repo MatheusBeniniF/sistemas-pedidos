@@ -14,7 +14,7 @@ CREATE TABLE `clients` (
 
 CREATE TABLE `requests` (
     `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `data` DATE NOT NULL,
+    `date` TIMESTAMP NOT NULL,
     `client_id` INT NOT NULL,
     FOREIGN KEY (`client_id`) REFERENCES `clients`(`id`) ON DELETE CASCADE
 );

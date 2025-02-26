@@ -9,43 +9,40 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ClientsService = void 0;
+exports.RequestService = void 0;
 const database_1 = require("../database");
-class ClientsService {
-    getAllClients() {
+class RequestService {
+    getAllProducts() {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("SELECT * FROM clients");
+                const [rows] = yield connection.execute("SELECT * FROM requests");
                 return {
-                    clients: rows
+                    requests: rows,
                 };
             }
             catch (error) {
-                throw new Error("Erro ao buscar clientes");
+                throw new Error("Erro ao buscar produtos");
             }
             finally {
                 connection.end();
             }
         });
     }
-    register(client) {
+    create(client_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO clients (name, email) VALUES (?, ?)", [
-                    client.name,
-                    client.email
-                ]);
+                const date = new Date();
+                const [rows] = yield connection.execute("INSERT INTO requests (date, client_id) VALUES (?, ?)", [date, client_id]);
                 return {
                     id: rows.insertId,
-                    name: client.name,
-                    email: client.email
+                    date,
+                    client_id,
                 };
             }
             catch (error) {
-                console.error(error);
-                throw new Error("Erro ao inserir cliente no banco");
+                throw new Error("Erro ao criar pedido");
             }
             finally {
                 connection.end();
@@ -53,4 +50,4 @@ class ClientsService {
         });
     }
 }
-exports.ClientsService = ClientsService;
+exports.RequestService = RequestService;
