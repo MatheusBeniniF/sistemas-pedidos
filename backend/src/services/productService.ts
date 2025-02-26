@@ -5,21 +5,19 @@ export class ProductService {
   async register(name: string, price: number) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO products (name, price) VALUES (?, ?)", [
-        name,
-        price
-      ])
+      const [rows] = await connection.execute<mysql.ResultSetHeader>(
+        "INSERT INTO products (name, price) VALUES (?, ?)",
+        [name, price]
+      );
 
       return {
         id: rows.insertId,
         name,
-        price
-      }
-    }
-    catch (error) {
+        price,
+      };
+    } catch (error) {
       throw new Error("Erro ao inserir produto no banco");
-    }
-    finally {
+    } finally {
       connection.end();
     }
   }
@@ -27,9 +25,11 @@ export class ProductService {
   async getAllProducts() {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM products");
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM products"
+      );
       return {
-        products: rows
+        products: rows,
       };
     } catch (error) {
       throw new Error("Erro ao buscar produtos");
@@ -37,5 +37,19 @@ export class ProductService {
       connection.end();
     }
   }
+
+  async findById(id: number) {
+    const connection = await createConnection();
+    try {
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM products WHERE id = ?",
+        [id]
+      );
+      return rows[0];
+    } catch (error) {
+      throw new Error("Erro ao buscar produto");
+    } finally {
+      connection.end();
+    }
+  }
 }
-  

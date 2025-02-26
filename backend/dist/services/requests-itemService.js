@@ -9,38 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductService = void 0;
+exports.RequestsItemService = void 0;
 const database_1 = require("../database");
-class ProductService {
-    register(name, price) {
+class RequestsItemService {
+    getAllRequestsItem() {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO products (name, price) VALUES (?, ?)", [
-                    name,
-                    price
-                ]);
+                const [rows] = yield connection.execute("SELECT * FROM requests_item");
                 return {
-                    id: rows.insertId,
-                    name,
-                    price
-                };
-            }
-            catch (error) {
-                throw new Error("Erro ao inserir produto no banco");
-            }
-            finally {
-                connection.end();
-            }
-        });
-    }
-    getAllProducts() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const connection = yield (0, database_1.createConnection)();
-            try {
-                const [rows] = yield connection.execute("SELECT * FROM products");
-                return {
-                    products: rows
+                    requests_item: rows
                 };
             }
             catch (error) {
@@ -51,15 +29,21 @@ class ProductService {
             }
         });
     }
-    findById(id) {
+    create(request_id, product_id, quantity, price) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("SELECT * FROM products WHERE id = ?", [id]);
-                return rows[0];
+                const [rows] = yield connection.execute("INSERT INTO requests_item (request_id, product_id, quantity, price) VALUES (?, ?, ?, ?)", [request_id, product_id, quantity, price]);
+                return {
+                    id: rows.insertId,
+                    request_id,
+                    product_id,
+                    quantity,
+                    price
+                };
             }
             catch (error) {
-                throw new Error("Erro ao buscar produto");
+                throw new Error("Erro ao criar item do pedido");
             }
             finally {
                 connection.end();
@@ -67,4 +51,4 @@ class ProductService {
         });
     }
 }
-exports.ProductService = ProductService;
+exports.RequestsItemService = RequestsItemService;

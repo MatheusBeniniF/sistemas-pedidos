@@ -9,18 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllRequestsController = getAllRequestsController;
-exports.createRequestController = createRequestController;
-const requestsService_1 = require("../services/requestsService");
+exports.getAllRequestsItemController = getAllRequestsItemController;
+exports.createRequestItemController = createRequestItemController;
+const requests_itemService_1 = require("../services/requests-itemService");
 const zod_1 = require("zod");
+const productService_1 = require("../services/productService");
 const requestSchema = zod_1.z.object({
-    client_id: zod_1.z.number().min(1, "Id do cliente é obrigatório"),
+    request_id: zod_1.z.number().min(1, "Id do pedido é obrigatório"),
+    product_id: zod_1.z.number().min(1, "Id do produto é obrigatório"),
+    quantity: zod_1.z.number().min(1, "Quantidade é obrigatória"),
 });
-function getAllRequestsController(_request, reply) {
+function getAllRequestsItemController(_request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const requestService = new requestsService_1.RequestService();
-            const requests = yield requestService.getAllProducts();
+            const requestService = new requests_itemService_1.RequestsItemService();
+            const requests = yield requestService.getAllRequestsItem();
             return reply.send(requests);
         }
         catch (error) {
@@ -28,12 +31,14 @@ function getAllRequestsController(_request, reply) {
         }
     });
 }
-function createRequestController(request, reply) {
+function createRequestItemController(request, reply) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { client_id } = requestSchema.parse(request.body);
-            const requestService = new requestsService_1.RequestService();
-            const createdRequest = yield requestService.create(client_id);
+            const { request_id, product_id, quantity } = requestSchema.parse(request.body);
+            const requestsItemService = new requests_itemService_1.RequestsItemService();
+            const productService = new productService_1.ProductService();
+            const product = yield productService.findById(product_id);
+            const createdRequest = yield requestsItemService.create(request_id, product_id, quantity, product.price);
             return reply.send({
                 message: "Pedido criado com sucesso!",
                 createdRequest,
