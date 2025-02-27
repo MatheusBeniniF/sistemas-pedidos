@@ -19,18 +19,24 @@ export class ClientsService {
   async register(client: { name: string; email: string }) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO clients (name, email) VALUES (?, ?)", [
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE email = ?", [client.email]);
+      if (rows.length > 0) {
+        throw new Error("Email já cadastrado");
+      }
+      
+      const [insertResult] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO clients (name, email) VALUES (?, ?)", [
         client.name,
         client.email
       ]);
       return {
-        id: rows.insertId,
+        id: insertResult.insertId,
         name: client.name,
         email: client.email
       };
     } catch (error) {
-        console.error(error);
-      throw new Error("Erro ao inserir cliente no banco");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao inserir cliente no banco");
+      }
     } finally {
       connection.end();
     }
@@ -50,7 +56,9 @@ export class ClientsService {
       ]);
       return updateResult;
     } catch (error) {
-      throw new Error("Erro ao atualizar cliente");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao atualizar cliente no banco");
+      }
     } finally {
       connection.end();
     }
@@ -66,7 +74,9 @@ export class ClientsService {
       const [deleteResult] = await connection.execute<mysql.ResultSetHeader>("DELETE FROM clients WHERE id = ?", [id]);
       return deleteResult;
     } catch (error) {
-      throw new Error("Erro ao deletar cliente");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao deletar cliente no banco");
+      }
     } finally {
       connection.end();
     }
@@ -81,7 +91,9 @@ export class ClientsService {
       }
       return rows[0];
     } catch (error) {
-      throw new Error("Erro ao buscar cliente");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao buscar cliente no banco");
+      }
     } finally {
       connection.end();
     }

@@ -33,19 +33,24 @@ class ClientsService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("INSERT INTO clients (name, email) VALUES (?, ?)", [
+                const [rows] = yield connection.execute("SELECT * FROM clients WHERE email = ?", [client.email]);
+                if (rows.length > 0) {
+                    throw new Error("Email já cadastrado");
+                }
+                const [insertResult] = yield connection.execute("INSERT INTO clients (name, email) VALUES (?, ?)", [
                     client.name,
                     client.email
                 ]);
                 return {
-                    id: rows.insertId,
+                    id: insertResult.insertId,
                     name: client.name,
                     email: client.email
                 };
             }
             catch (error) {
-                console.error(error);
-                throw new Error("Erro ao inserir cliente no banco");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao inserir cliente no banco");
+                }
             }
             finally {
                 connection.end();
@@ -68,7 +73,9 @@ class ClientsService {
                 return updateResult;
             }
             catch (error) {
-                throw new Error("Erro ao atualizar cliente");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao atualizar cliente no banco");
+                }
             }
             finally {
                 connection.end();
@@ -87,7 +94,9 @@ class ClientsService {
                 return deleteResult;
             }
             catch (error) {
-                throw new Error("Erro ao deletar cliente");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao deletar cliente no banco");
+                }
             }
             finally {
                 connection.end();
@@ -105,7 +114,9 @@ class ClientsService {
                 return rows[0];
             }
             catch (error) {
-                throw new Error("Erro ao buscar cliente");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao buscar cliente no banco");
+                }
             }
             finally {
                 connection.end();

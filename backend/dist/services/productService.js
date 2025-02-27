@@ -28,7 +28,9 @@ class ProductService {
                 };
             }
             catch (error) {
-                throw new Error("Erro ao inserir produto no banco");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao inserir produto no banco");
+                }
             }
             finally {
                 connection.end();
@@ -63,8 +65,9 @@ class ProductService {
                 return rows[0];
             }
             catch (error) {
-                console.error("Erro ao buscar produto:", error);
-                throw new Error("Erro ao buscar produto");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao buscar produto no banco");
+                }
             }
             finally {
                 yield connection.end();
@@ -83,7 +86,9 @@ class ProductService {
                 return deleteResult;
             }
             catch (error) {
-                throw new Error("Erro ao deletar produto");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao deletar produto no banco");
+                }
             }
             finally {
                 connection.end();
@@ -102,7 +107,9 @@ class ProductService {
                 return updateResult;
             }
             catch (error) {
-                throw new Error("Erro ao atualizar produto");
+                if (error instanceof Error) {
+                    throw new Error(error.message || "Erro ao atualizar produto no banco");
+                }
             }
             finally {
                 connection.end();

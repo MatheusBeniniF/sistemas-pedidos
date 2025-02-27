@@ -57,7 +57,9 @@ export class RequestService {
       
       return updateResult;
     } catch (error) {
-      throw new Error("Erro ao atualizar pedido");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao atualizar pedido");
+      }
     } finally {
       connection.end();
     }
@@ -80,7 +82,9 @@ export class RequestService {
       
       return deleteResult;
     } catch (error) {
-      throw new Error("Erro ao deletar pedido");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao deletar pedido");
+      }
     } finally {
       connection.end();
     }
@@ -99,7 +103,9 @@ export class RequestService {
       
       return rows[0];
     } catch (error) {
-      throw new Error("Erro ao buscar pedido");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao buscar pedido");
+      }
     } finally {
       connection.end();
     }

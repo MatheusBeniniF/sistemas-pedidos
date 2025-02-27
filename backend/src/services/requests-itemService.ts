@@ -63,7 +63,9 @@ export class RequestsItemService {
 
       return deleteResult;
     } catch (error) {
-      throw new Error("Erro ao deletar item do pedido");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao deletar item do pedido");
+      }
     } finally {
       connection.end();
     }
@@ -85,7 +87,9 @@ export class RequestsItemService {
       );      
       return updateResult;
     } catch (error) {
-      throw new Error("Erro ao atualizar item do pedido");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao atualizar item do pedido");
+      }
     } finally {
       connection.end();
     }
@@ -103,7 +107,9 @@ export class RequestsItemService {
       }
       return rows[0];
     } catch (error) {
-      throw new Error("Erro ao buscar item do pedido");
+      if (error instanceof Error) {
+        throw new Error(error.message || "Erro ao buscar item do pedido");
+      }
     } finally {
       connection.end();
     }
