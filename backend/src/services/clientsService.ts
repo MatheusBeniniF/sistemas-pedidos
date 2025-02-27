@@ -49,6 +49,11 @@ export class ClientsService {
       if (rows.length === 0) {
         throw new Error("Cliente não encontrado");
       }
+      const [verifyEmail] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE email = ?", [client.email]);
+      if (verifyEmail.length > 0) {
+        throw new Error("Email já cadastrado");
+      }
+      
       const [updateResult] = await connection.execute<mysql.ResultSetHeader>("UPDATE clients SET name = ?, email = ? WHERE id = ?", [
         client.name,
         client.email,

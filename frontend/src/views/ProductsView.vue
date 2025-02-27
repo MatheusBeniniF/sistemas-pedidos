@@ -87,8 +87,8 @@ const closeDialog = () => {
         :headers="headers" 
         :items="products" 
         item-value="id"
-        :height="400"
         class="product-table"
+        :width="100"
         :style="{ width: '100%' }"
       >
         <template v-slot:top>
@@ -99,8 +99,8 @@ const closeDialog = () => {
         </template>
 
         <template v-slot:item.action="{ item }">
-          <v-btn class="mx-1" size="small" @click="openEditProductDialog(item)">Editar</v-btn>
-          <v-btn class="mx-1" size="small" color="error" @click="openDeleteDialog(item)">Excluir</v-btn>
+          <v-btn class="mx-1" size="x-small" @click="openEditProductDialog(item)">Editar</v-btn>
+          <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteDialog(item)">Excluir</v-btn>
         </template>
       </v-data-table>
     </template>
@@ -120,7 +120,7 @@ const closeDialog = () => {
         </v-card-text>
         <v-card-actions>
           <v-btn @click="closeDialog">Cancelar</v-btn>
-          <v-btn color="primary" @click="saveProduct">{{ isEditing ? 'Salvar' : 'Criar' }}</v-btn>
+          <v-btn color="primary" @click="saveProduct">Salvar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

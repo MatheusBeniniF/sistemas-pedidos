@@ -65,6 +65,10 @@ class ClientsService {
                 if (rows.length === 0) {
                     throw new Error("Cliente não encontrado");
                 }
+                const [verifyEmail] = yield connection.execute("SELECT * FROM clients WHERE email = ?", [client.email]);
+                if (verifyEmail.length > 0) {
+                    throw new Error("Email já cadastrado");
+                }
                 const [updateResult] = yield connection.execute("UPDATE clients SET name = ?, email = ? WHERE id = ?", [
                     client.name,
                     client.email,
