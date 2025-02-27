@@ -3,7 +3,13 @@ import axios, { AxiosError } from 'axios'
 import { useToast } from 'vue-toast-notification'
 
 interface ApiResponse {
-  message: string
+  error: string
+}
+
+interface Product {
+  id: number
+  name: string
+  price: number
 }
 
 const API_URL = 'http://localhost:3000/products'
@@ -13,17 +19,17 @@ const fetchProducts = async () => {
   return data.products
 }
 
-const createProduct = async (product) => {
+const createProduct = async (product: Product) => {
   const { data } = await axios.post(API_URL, product)
   return data
 }
 
-const updateProduct = async (id, product) => {
+const updateProduct = async (id: number, product: Product) => {
   const { data } = await axios.put(`${API_URL}/${id}`, product)
   return data
 }
 
-const deleteProduct = async (id) => {
+const deleteProduct = async (id: number) => {
   const { data } = await axios.delete(`${API_URL}/${id}`)
   return data
 }
@@ -42,11 +48,11 @@ export function useCreateProduct() {
   return useMutation({
     mutationFn: createProduct,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['products'])
+      queryClient.invalidateQueries({ queryKey: ['products'] })
       toast.success(data.message, { position: 'top-right' })
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(error?.response?.data?.message || 'Erro desconhecido', { position: 'top-right' })
+      toast.error(error.response?.data.error || 'Erro desconhecido', { position: 'top-right' })
     },
   })
 }
@@ -56,13 +62,13 @@ export function useEditProduct() {
   const toast = useToast()
 
   return useMutation({
-    mutationFn: ({ id, product }) => updateProduct(id, product),
+    mutationFn: ({ id, product }: { id: number; product: Product }) => updateProduct(id, product),
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['products'])
+      queryClient.invalidateQueries({ queryKey: ['products'] })
       toast.success(data.message, { position: 'top-right' })
     },
     onError: (error: AxiosError<ApiResponse>) => {
-      toast.error(error.response?.data?.message || 'Erro desconhecido', { position: 'top-right' })
+      toast.error(error.response?.data.error || 'Erro desconhecido', { position: 'top-right' })
     },
   })
 }
@@ -74,11 +80,12 @@ export function useDeleteProduct() {
   return useMutation({
     mutationFn: deleteProduct,
     onSuccess: (data) => {
-      queryClient.invalidateQueries(['products'])
+      queryClient.invalidateQueries({ queryKey: ['products'] })
       toast.success(data.message, { position: 'top-right' })
     },
-    onError: (error) => {
-      toast.error(error.response?.data?.message || 'Erro desconhecido', { position: 'top-right' })
+    onError: (error: AxiosError<ApiResponse>) => {
+      const errorMessage = error.response?.data.error || 'Erro desconhecido'
+      toast.error(errorMessage, { position: 'top-right' })
     },
   })
 }
