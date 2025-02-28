@@ -17,6 +17,9 @@ class RequestsItemService {
             const connection = yield (0, database_1.createConnection)();
             try {
                 const [rows] = yield connection.execute("SELECT * FROM requests_item");
+                if (rows.length === 0) {
+                    throw new Error("Nenhum item do pedido encontrado");
+                }
                 return {
                     requests_item: rows,
                 };

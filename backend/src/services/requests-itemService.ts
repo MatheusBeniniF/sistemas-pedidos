@@ -8,6 +8,9 @@ export class RequestsItemService {
       const [rows] = await connection.execute<mysql.RowDataPacket[]>(
         "SELECT * FROM requests_item"
       );
+      if (rows.length === 0) {
+        throw new Error("Nenhum item do pedido encontrado");
+      }
       return {
         requests_item: rows,
       };
