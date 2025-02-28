@@ -1,5 +1,6 @@
 import { createConnection } from "../database";
 import * as mysql from "mysql2/promise";
+import { RequestService } from "./requestsService";
 
 export class RequestsItemService {
   async getAllRequestsItem() {
@@ -50,7 +51,7 @@ export class RequestsItemService {
     const connection = await createConnection();
     try {
       const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-        "SELECT * FROM requests_item WHERE id = ?",
+        "SELECT * FROM requests_item WHERE request_id = ?",
         [id]
       );
       if (rows.length === 0) {
@@ -60,6 +61,11 @@ export class RequestsItemService {
         "DELETE FROM requests_item WHERE id = ?",
         [id]
       );
+
+      if(deleteResult.serverStatus === 2) {
+        const requestService = new RequestService();
+        await requestService.delete(id);
+      }
 
       return deleteResult;
     } catch (error) {

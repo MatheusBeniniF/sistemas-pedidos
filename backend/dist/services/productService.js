@@ -103,9 +103,11 @@ class ProductService {
                 if (rows.length === 0) {
                     throw new Error("Produto não encontrado");
                 }
-                const [verifyName] = yield connection.execute("SELECT * FROM products WHERE name = ?", [product.name]);
-                if (verifyName.length > 0) {
-                    throw new Error("Produto já cadastrado");
+                if (product.name !== rows[0].name) {
+                    const [verifyName] = yield connection.execute("SELECT * FROM products WHERE name = ?", [product.name]);
+                    if (verifyName.length > 0) {
+                        throw new Error("Produto já cadastrado");
+                    }
                 }
                 const [updateResult] = yield connection.execute("UPDATE products SET name = ?, price = ? WHERE id = ?", [product.name, product.price, id]);
                 return updateResult;

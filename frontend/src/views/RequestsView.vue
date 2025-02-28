@@ -1,4 +1,3 @@
-
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useOrders, useCreateOrder, useDeleteOrder, useCreateOrderItem, useOrderItem } from '@/hooks/useRequests'
@@ -24,15 +23,9 @@ const { mutate: deleteRequest } = useDeleteOrder()
 const { data: orderItem, refetch: refetchOrderItem, orderId } = useOrderItem();
 
 const headers = [
-  { text: 'ID', key: 'id', value: 'id' },
-  { text: 'Cliente', key: 'client', value: 'client' },
-  { text: 'Ação', key: 'action' },
-]
-
-const itemsHeaders = [
-  { text: 'Produto', key: 'product' },
-  { text: 'Quantidade', key: 'quantity' },
-  { text: 'Preço', key: 'price' },
+  { title: 'ID', key: 'id', value: 'id' },
+  { title: 'Cliente', key: 'client', value: 'client' },
+  { title: 'Ação', key: 'action' },
 ]
 
 const getClient = (id: number) => {
@@ -152,12 +145,8 @@ const closeDialog = () => {
       </template>
       <template v-slot:item.action="{ item }">
         <v-btn class="mx-1" size="x-small" @click="viewOrderItems(item)">Ver Itens</v-btn>
-        <v-btn class="mx-1" size="x-small" color="primary" @click="openEditOrderDialog(item)"
-          >Editar</v-btn
-        >
-        <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteOrderDialog(item)"
-          >Excluir</v-btn
-        >
+        <v-btn class="mx-1" size="x-small" color="primary" @click="openEditOrderDialog(item)">Editar</v-btn>
+        <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteOrderDialog(item)">Excluir</v-btn>
       </template>
     </v-data-table>
 
@@ -165,25 +154,11 @@ const closeDialog = () => {
       <v-card>
         <v-card-title>{{ isEditMode ? 'Editar Pedido' : 'Adicionar Pedido' }}</v-card-title>
         <v-card-text>
-          <v-select
-            :items="getClients()"
-            label="Selecione o Cliente"
-            item-text="name"
-            item-value="id"
-            v-model="orderForm.client"
-            :loading="isClientsLoading"
-            :disabled="isClientsLoading"
-          />
-          <v-select
-            :items="getProducts()"
-            label="Selecione o Produto"
-            item-text="name"
-            item-value="id"
-            v-model="orderForm.product"
-            :loading="isProductsLoading"
-            :disabled="isProductsLoading"
-            @update:modelValue="updateProductPrice"
-          />
+          <v-select :items="getClients()" label="Selecione o Cliente" item-text="name" item-value="id"
+            v-model="orderForm.client" :loading="isClientsLoading" :disabled="isClientsLoading" />
+          <v-select :items="getProducts()" label="Selecione o Produto" item-text="name" item-value="id"
+            v-model="orderForm.product" :loading="isProductsLoading" :disabled="isProductsLoading"
+            @update:modelValue="updateProductPrice" />
           <v-text-field label="Quantidade" v-model="orderForm.quantity" type="number" min="1" />
         </v-card-text>
         <v-card-actions>
@@ -197,8 +172,7 @@ const closeDialog = () => {
       <v-card>
         <v-card-title>Confirmar Exclusão</v-card-title>
         <v-card-text>
-          Tem certeza de que deseja excluir o pedido <strong>{{ orderToDelete?.id }}</strong
-          >?
+          Tem certeza de que deseja excluir o pedido <strong>{{ orderToDelete?.id }}</strong>?
         </v-card-text>
         <v-card-actions>
           <v-btn @click="closeDeleteDialog">Cancelar</v-btn>

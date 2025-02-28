@@ -5,9 +5,11 @@ export class ClientsService {
   async getAllClients() {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients");
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM clients"
+      );
       return {
-        clients: rows
+        clients: rows,
       };
     } catch (error) {
       throw new Error("Erro ao buscar clientes");
@@ -19,19 +21,22 @@ export class ClientsService {
   async register(client: { name: string; email: string }) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE email = ?", [client.email]);
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM clients WHERE email = ?",
+        [client.email]
+      );
       if (rows.length > 0) {
         throw new Error("Email já cadastrado");
       }
-      
-      const [insertResult] = await connection.execute<mysql.ResultSetHeader>("INSERT INTO clients (name, email) VALUES (?, ?)", [
-        client.name,
-        client.email
-      ]);
+
+      const [insertResult] = await connection.execute<mysql.ResultSetHeader>(
+        "INSERT INTO clients (name, email) VALUES (?, ?)",
+        [client.name, client.email]
+      );
       return {
         id: insertResult.insertId,
         name: client.name,
-        email: client.email
+        email: client.email,
       };
     } catch (error) {
       if (error instanceof Error) {
@@ -45,20 +50,28 @@ export class ClientsService {
   async update(id: number, client: { name: string; email: string }) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE id = ?", [id]);
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM clients WHERE id = ?",
+        [id]
+      );
       if (rows.length === 0) {
         throw new Error("Cliente não encontrado");
       }
-      const [verifyEmail] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE email = ?", [client.email]);
-      if (verifyEmail.length > 0) {
-        throw new Error("Email já cadastrado");
+
+      if (client.email !== rows[0].email) {
+        const [verifyEmail] = await connection.execute<mysql.RowDataPacket[]>(
+          "SELECT * FROM clients WHERE email = ?",
+          [client.email]
+        );
+        if (verifyEmail.length > 0) {
+          throw new Error("Email já cadastrado");
+        }
       }
-      
-      const [updateResult] = await connection.execute<mysql.ResultSetHeader>("UPDATE clients SET name = ?, email = ? WHERE id = ?", [
-        client.name,
-        client.email,
-        id
-      ]);
+
+      const [updateResult] = await connection.execute<mysql.ResultSetHeader>(
+        "UPDATE clients SET name = ?, email = ? WHERE id = ?",
+        [client.name, client.email, id]
+      );
       return updateResult;
     } catch (error) {
       if (error instanceof Error) {
@@ -72,11 +85,17 @@ export class ClientsService {
   async delete(id: number) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE id = ?", [id]);
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM clients WHERE id = ?",
+        [id]
+      );
       if (rows.length === 0) {
         throw new Error("Cliente não encontrado");
       }
-      const [deleteResult] = await connection.execute<mysql.ResultSetHeader>("DELETE FROM clients WHERE id = ?", [id]);
+      const [deleteResult] = await connection.execute<mysql.ResultSetHeader>(
+        "DELETE FROM clients WHERE id = ?",
+        [id]
+      );
       return deleteResult;
     } catch (error) {
       if (error instanceof Error) {
@@ -90,7 +109,10 @@ export class ClientsService {
   async findById(id: number) {
     const connection = await createConnection();
     try {
-      const [rows] = await connection.execute<mysql.RowDataPacket[]>("SELECT * FROM clients WHERE id = ?", [id]);
+      const [rows] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM clients WHERE id = ?",
+        [id]
+      );
       if (rows.length === 0) {
         throw new Error("Cliente não encontrado");
       }

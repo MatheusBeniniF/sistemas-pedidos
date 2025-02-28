@@ -18,7 +18,7 @@ class ClientsService {
             try {
                 const [rows] = yield connection.execute("SELECT * FROM clients");
                 return {
-                    clients: rows
+                    clients: rows,
                 };
             }
             catch (error) {
@@ -37,14 +37,11 @@ class ClientsService {
                 if (rows.length > 0) {
                     throw new Error("Email já cadastrado");
                 }
-                const [insertResult] = yield connection.execute("INSERT INTO clients (name, email) VALUES (?, ?)", [
-                    client.name,
-                    client.email
-                ]);
+                const [insertResult] = yield connection.execute("INSERT INTO clients (name, email) VALUES (?, ?)", [client.name, client.email]);
                 return {
                     id: insertResult.insertId,
                     name: client.name,
-                    email: client.email
+                    email: client.email,
                 };
             }
             catch (error) {
@@ -65,15 +62,13 @@ class ClientsService {
                 if (rows.length === 0) {
                     throw new Error("Cliente não encontrado");
                 }
-                const [verifyEmail] = yield connection.execute("SELECT * FROM clients WHERE email = ?", [client.email]);
-                if (verifyEmail.length > 0) {
-                    throw new Error("Email já cadastrado");
+                if (client.email !== rows[0].email) {
+                    const [verifyEmail] = yield connection.execute("SELECT * FROM clients WHERE email = ?", [client.email]);
+                    if (verifyEmail.length > 0) {
+                        throw new Error("Email já cadastrado");
+                    }
                 }
-                const [updateResult] = yield connection.execute("UPDATE clients SET name = ?, email = ? WHERE id = ?", [
-                    client.name,
-                    client.email,
-                    id
-                ]);
+                const [updateResult] = yield connection.execute("UPDATE clients SET name = ?, email = ? WHERE id = ?", [client.name, client.email, id]);
                 return updateResult;
             }
             catch (error) {
