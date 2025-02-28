@@ -66,3 +66,4 @@ para iniciar o servidor de desenvolvimento do frontend.
 ## Acessando a aplicação
 
 A aplicação estará disponível em `http://localhost:5173/`
+![modelagem banco](image.png)
