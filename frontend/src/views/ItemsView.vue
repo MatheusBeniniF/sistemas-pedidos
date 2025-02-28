@@ -97,22 +97,18 @@ const getProducts = () => {
       Carregando produtos...
     </v-alert>
 
-    <!-- Tabela de Itens do Pedido -->
     <v-data-table v-if="!isLoading && !isError && !isProductsLoading && orderItems" :headers="itemsHeaders"
       :items="orderItems">
       <template v-slot:item.product="{ item }">
         <span>{{ findProductById(item.product_id)?.name || 'Produto não encontrado' }}</span>
       </template>
       <template v-slot:item.action="{ item }">
-        <!-- Botão de editar -->
         <v-btn class="mx-1" size="x-small" color="primary" @click="openEditModal(item)">Editar</v-btn>
 
-        <!-- Botão de excluir -->
         <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteModal(item)">Excluir</v-btn>
       </template>
     </v-data-table>
 
-    <!-- Modal de Edição -->
     <v-dialog v-model="isModalVisible" max-width="500px">
       <v-card>
         <v-card-title>

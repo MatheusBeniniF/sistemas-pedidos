@@ -23,9 +23,9 @@ const { mutate: deleteRequest } = useDeleteOrder()
 const { data: orderItem, refetch: refetchOrderItem, orderId } = useOrderItem();
 
 const headers = [
-  { title: 'ID', key: 'id', value: 'id' },
-  { title: 'Cliente', key: 'client', value: 'client' },
-  { title: 'Ação', key: 'action' },
+  { title: 'ID', align: 'start', key: 'id', value: 'id' },
+  { title: 'Cliente', align: 'start', key: 'client', value: 'client' },
+  { title: 'Ação', align: 'center', key: 'action' },
 ]
 
 const getClient = (id: number) => {
