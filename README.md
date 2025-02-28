@@ -17,7 +17,9 @@ e execute o comando
 npm i
 ```
 
-para instalar as dependências do backend. 3. Navegue até a pasta frontend
+para instalar as dependências do backend.
+
+3. Navegue até a pasta frontend
 
 ```
 cd frontend
@@ -29,19 +31,31 @@ e execute o comando
 npm i
 ```
 
-para instalar as dependências do frontend. 4. Navegue até a pasta raiz do projeto e execute o comando
+para instalar as dependências do frontend, e execute o comando
+
+```
+cp .env.example .env
+```
+
+para copiar as variaveis necessarias.
+
+4. Navegue até a pasta raiz do projeto e execute o comando
 
 ```
 docker-compose up
 ```
 
-para subir o container do banco de dados. 5. Navegue até a pasta `backend` e execute o comando
+para subir o container do banco de dados.
+
+5. Navegue até a pasta `backend` e execute o comando
 
 ```
 npm start
 ```
 
-para iniciar o servidor do backend. 6. Navegue até a pasta `frontend` e execute o comando
+para iniciar o servidor do backend.
+
+6. Navegue até a pasta `frontend` e execute o comando
 
 ```
 npm run dev
