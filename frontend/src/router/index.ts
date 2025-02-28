@@ -9,7 +9,7 @@ const routes = [
   { path: '/', redirect: '/produtos' },
   { path: '/produtos', name: 'Produtos', component: ProductsView },
   { path: '/clientes', name: 'Clientes', component: ClientsView },
-  // { path: '/pedidos', name: 'Pedidos', component: RequestsView },
+  { path: '/pedidos', name: 'Pedidos', component: RequestsView },
   { path: '/pedidos/:id', name: 'PedidoItens', component: ItemsView }
 ]
 

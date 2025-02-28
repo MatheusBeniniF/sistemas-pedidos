@@ -1,19 +1,43 @@
+<script setup lang="ts">
+import { ref, computed, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
+import { useOrderItem } from '@/hooks/useRequests'
+import { useProducts } from '@/hooks/useProducts'
+import axios from 'axios'
+const route = useRoute()
+const orderId = ref(route.params.id)
+const {
+  data: orderItems,
+  isLoading,
+  isError,
+  isSuccess,
+  error,
+  refetch,
+} = useOrderItem(orderId.value)
+const { data: products, isLoading: isProductsLoading } = useProducts()
+
+console.log(products)
+</script>
+
 <template>
-    <v-select
-      v-model="selectedProduct"
-      :items="products"
-      item-text="name"
-      item-value="id"
-      label="Selecione um Produto"
-    />
-  </template>
-   
-  <script setup lang="ts">
-  const selectedProduct = ref(null)
-  
-  const products = ref([
-    { id: 1, name: 'Produto 1' },
-    { id: 2, name: 'Produto 2' },
-  ])
-  </script>
-  
+  <v-container>
+    <v-btn @click="$router.push('/')">Voltar</v-btn>
+    <h1>Itens do Pedido #{{ route.params.id }}</h1>
+
+    <v-progress-circular
+      v-if="isLoading || isProductsLoading"
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
+    <v-alert v-if="isError" type="error">Erro ao carregar itens do pedido</v-alert>
+
+    <v-data-table
+      v-if="!isLoading && !isError"
+      :headers="itemsHeaders"
+      :items="orderItems ? orderItems : []"
+    >
+      <template v-slot:item.product="{ item }">
+      </template>
+    </v-data-table>
+  </v-container>
+</template>

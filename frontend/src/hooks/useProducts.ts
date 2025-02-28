@@ -12,25 +12,26 @@ interface Product {
   price: number
 }
 
-const API_URL = 'http://localhost:3000/products'
+const API_URL = import.meta.env.VITE_API_URL
+const PRODUCTS_URL = `${API_URL}/products`
 
 const fetchProducts = async () => {
-  const { data } = await axios.get(API_URL)
+  const { data } = await axios.get(PRODUCTS_URL)
   return data.products
 }
 
 const createProduct = async (product: Product) => {
-  const { data } = await axios.post(API_URL, product)
+  const { data } = await axios.post(PRODUCTS_URL, product)
   return data
 }
 
 const updateProduct = async (id: number, product: Product) => {
-  const { data } = await axios.put(`${API_URL}/${id}`, product)
+  const { data } = await axios.put(`${PRODUCTS_URL}/${id}`, product)
   return data
 }
 
 const deleteProduct = async (id: number) => {
-  const { data } = await axios.delete(`${API_URL}/${id}`)
+  const { data } = await axios.delete(`${PRODUCTS_URL}/${id}`)
   return data
 }
 
@@ -38,6 +39,16 @@ export function useProducts() {
   return useQuery({
     queryKey: ['products'],
     queryFn: fetchProducts,
+  })
+}
+
+export function useProduct(id: number) {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      const { data } = await axios.get(`${PRODUCTS_URL}/${id}`)
+      return data
+    },
   })
 }
 

@@ -13,20 +13,21 @@ interface Client {
   email: string
 }
 
-const API_URL = 'http://localhost:3000/clients'
+const API_URL = import.meta.env.VITE_API_URL
+const CLIENTS_URL = `${API_URL}/clients`
 
 const createCliente = async (client: Client) => {
-  const { data } = await axios.post(API_URL, client)
+  const { data } = await axios.post(CLIENTS_URL, client)
   return data
 }
 
 const updateClient = async ({ id, client }: { id: number; client: Client }) => {
-  const { data } = await axios.put(`${API_URL}/${id}`, client)
+  const { data } = await axios.put(`${CLIENTS_URL}/${id}`, client)
   return data
 }
 
 const deleteClient = async (id: number) => {
-  const { data } = await axios.delete(`${API_URL}/${id}`)
+  const { data } = await axios.delete(`${CLIENTS_URL}/${id}`)
   return data
 }
 
@@ -34,7 +35,7 @@ export function useClients() {
   return useQuery({
     queryKey: ['clients'],
     queryFn: async () => {
-      const { data } = await axios.get(API_URL)
+      const { data } = await axios.get(CLIENTS_URL)
       return data.clients
     },
   })

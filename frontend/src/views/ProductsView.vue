@@ -106,14 +106,15 @@ const closeDialog = () => {
     </template>
 
     <template v-if="!isLoading && (!products || products.length === 0)">
-      <v-alert type="info" class="mt-4" dismissible>
+      <v-alert dismissible>
         Nenhum produto encontrado.
+        <v-btn color="primary" @click="openCreateProductDialog">Adicionar Produto</v-btn>
       </v-alert>
     </template>
 
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
-        <v-card-title>{{ isEditing ? 'Editar Produto' : 'Adicionar Produto' }}</v-card-title>
+        <v-card-title></v-card-title>
         <v-card-text>
           <v-text-field v-model="productForm.name" label="Nome do Produto"></v-text-field>
           <v-text-field v-model="productForm.price" label="Preço" type="number"></v-text-field>
