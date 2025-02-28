@@ -76,7 +76,7 @@ class RequestsItemService {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE id = ?", [id]);
+                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE request_id = ?", [id]);
                 if (rows.length === 0) {
                     throw new Error("Item do pedido não encontrado");
                 }

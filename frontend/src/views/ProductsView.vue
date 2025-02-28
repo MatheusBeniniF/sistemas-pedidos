@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { useProducts, useCreateProduct, useEditProduct, useDeleteProduct } from '@/hooks/useProducts'
 
 const headers = [
-  { text: 'Nome', align: 'start', key: 'name', value: 'name' },
-  { text: 'Preço', align: 'start', key: 'price', value: 'price' },
-  { text: 'Ação', key: 'action' },
+  { title: 'Produto', align: 'start', key: 'name', value: 'name' },
+  { title: 'Preço', align: 'start', key: 'price', value: 'price' },
+  { title: 'Editar / Excluir', key: 'action' },
 ]
 
 const dialog = ref(false)

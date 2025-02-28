@@ -106,6 +106,13 @@ export class ProductService {
       if (rows.length === 0) {
         throw new Error("Produto não encontrado");
       }
+      const [verifyName] = await connection.execute<mysql.RowDataPacket[]>(
+        "SELECT * FROM products WHERE name = ?",
+        [product.name]
+      )
+      if (verifyName.length > 0) {
+        throw new Error("Produto já cadastrado");
+      }
       const [updateResult] = await connection.execute<mysql.ResultSetHeader>(
         "UPDATE products SET name = ?, price = ? WHERE id = ?",
         [product.name, product.price, id]

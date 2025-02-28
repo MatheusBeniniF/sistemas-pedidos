@@ -75,7 +75,7 @@ export class RequestsItemService {
     const connection = await createConnection();
     try {
       const [rows] = await connection.execute<mysql.RowDataPacket[]>(
-        "SELECT * FROM requests_item WHERE id = ?",
+        "SELECT * FROM requests_item WHERE request_id = ?",
         [id]
       );
       if (rows.length === 0) {

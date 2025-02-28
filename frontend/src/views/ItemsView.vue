@@ -16,12 +16,17 @@ const {
 } = useOrderItem(orderId.value)
 const { data: products, isLoading: isProductsLoading } = useProducts()
 
-console.log(products)
+const itemsHeaders = [
+  { title: 'Id do pedido', key: 'request_id', value: 'request_id' },
+  { title: 'Produto', key: 'product_id', value: 'product_id' },
+  { title: 'Quantidade', key: 'quantity', value: 'quantity' },
+  { title: 'Preco', key: 'price', value: 'price' },
+]
 </script>
 
 <template>
   <v-container>
-    <v-btn @click="$router.push('/')">Voltar</v-btn>
+    <v-btn @click="$router.push('/pedidos')" class="mb-2">Voltar</v-btn>
     <h1>Itens do Pedido #{{ route.params.id }}</h1>
 
     <v-progress-circular
