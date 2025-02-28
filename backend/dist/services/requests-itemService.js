@@ -72,15 +72,15 @@ class RequestsItemService {
             }
         });
     }
-    update(id, request_id, product_id, quantity) {
+    update(id, item) {
         return __awaiter(this, void 0, void 0, function* () {
             const connection = yield (0, database_1.createConnection)();
             try {
-                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE request_id = ?", [id]);
+                const [rows] = yield connection.execute("SELECT * FROM requests_item WHERE request_id = ?", [item.request_id]);
                 if (rows.length === 0) {
                     throw new Error("Item do pedido não encontrado");
                 }
-                const [updateResult] = yield connection.execute("UPDATE requests_item SET request_id = ?, product_id = ?, quantity = ? WHERE id = ?", [request_id, product_id, quantity, id]);
+                const [updateResult] = yield connection.execute("UPDATE requests_item SET request_id = ?, product_id = ?, quantity = ? WHERE id = ?", [item.request_id, item.product_id, item.quantity, item.id]);
                 return updateResult;
             }
             catch (error) {

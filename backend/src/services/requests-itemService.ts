@@ -71,19 +71,24 @@ export class RequestsItemService {
     }
   }
 
-  async update(id: number, request_id: number, product_id: number, quantity: number) {
+  async update(id: number, item: {
+    id: number;
+    request_id: number;
+    product_id: number;
+    quantity: number;
+  }) {
     const connection = await createConnection();
     try {
       const [rows] = await connection.execute<mysql.RowDataPacket[]>(
         "SELECT * FROM requests_item WHERE request_id = ?",
-        [id]
+        [item.request_id]
       );
       if (rows.length === 0) {
         throw new Error("Item do pedido não encontrado");
       }
       const [updateResult] = await connection.execute<mysql.ResultSetHeader>(
         "UPDATE requests_item SET request_id = ?, product_id = ?, quantity = ? WHERE id = ?",
-        [request_id, product_id, quantity, id]
+        [item.request_id, item.product_id, item.quantity, item.id]
       );      
       return updateResult;
     } catch (error) {

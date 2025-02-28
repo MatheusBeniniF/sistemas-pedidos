@@ -1,68 +1,3 @@
-<template>
-  <v-container>
-    <v-data-table :headers="headers" :items="orders" item-value="id">
-      <template v-slot:top>
-        <v-toolbar>
-          <v-toolbar-title>Lista de Pedidos</v-toolbar-title>
-          <v-btn color="primary" @click="openCreateOrderDialog">Adicionar Pedido</v-btn>
-        </v-toolbar>
-      </template>
-      <template v-slot:item.client="{ item }">
-        <span>{{ getClient(item.client_id) }}</span>
-      </template>
-      <template v-slot:item.action="{ item }">
-        <v-btn class="mx-1" size="x-small" @click="viewOrderItems(item)">Ver Itens</v-btn>
-        <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteOrderDialog(item)">Excluir</v-btn>
-      </template>
-    </v-data-table>
-
-    <v-dialog v-model="dialog" max-width="600px">
-      <v-card>
-        <v-card-title>{{ isEditMode ? 'Editar Pedido' : 'Adicionar Pedido' }}</v-card-title>
-        <v-card-text>
-          <v-select
-            :items="getClients()"
-            label="Selecione o Cliente"
-            item-text="name"
-            item-value="id"
-            v-model="orderForm.client"
-            :loading="isClientsLoading"
-            :disabled="isClientsLoading"
-          />
-          <v-select
-            :items="getProducts()"
-            label="Selecione o Produto"
-            item-text="name"
-            item-value="id"
-            v-model="orderForm.product"
-            :loading="isProductsLoading"
-            :disabled="isProductsLoading"
-            @update:modelValue="updateProductPrice"
-          />
-          <v-text-field label="Quantidade" v-model="orderForm.quantity" type="number" min="1" />
-          <v-text-field label="Valor do Produto" v-model="orderForm.price" disabled />
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="closeDialog">Cancelar</v-btn>
-          <v-btn color="primary" @click="saveOrder">Salvar</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="deleteDialog" max-width="500px">
-      <v-card>
-        <v-card-title>Confirmar Exclusão</v-card-title>
-        <v-card-text>
-          Tem certeza de que deseja excluir o pedido <strong>{{ orderToDelete?.id }}</strong>?
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="closeDeleteDialog">Cancelar</v-btn>
-          <v-btn color="error" @click="deleteOrder(orderToDelete.id)">Excluir</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-container>
-</template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
@@ -202,3 +137,74 @@ const closeDialog = () => {
   dialog.value = false
 }
 </script>
+
+<template>
+  <v-container>
+    <v-data-table :headers="headers" :items="orders" item-value="id">
+      <template v-slot:top>
+        <v-toolbar>
+          <v-toolbar-title>Lista de Pedidos</v-toolbar-title>
+          <v-btn color="primary" @click="openCreateOrderDialog">Adicionar Pedido</v-btn>
+        </v-toolbar>
+      </template>
+      <template v-slot:item.client="{ item }">
+        <span>{{ getClient(item.client_id) }}</span>
+      </template>
+      <template v-slot:item.action="{ item }">
+        <v-btn class="mx-1" size="x-small" @click="viewOrderItems(item)">Ver Itens</v-btn>
+        <v-btn class="mx-1" size="x-small" color="primary" @click="openEditOrderDialog(item)"
+          >Editar</v-btn
+        >
+        <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteOrderDialog(item)"
+          >Excluir</v-btn
+        >
+      </template>
+    </v-data-table>
+
+    <v-dialog v-model="dialog" max-width="600px">
+      <v-card>
+        <v-card-title>{{ isEditMode ? 'Editar Pedido' : 'Adicionar Pedido' }}</v-card-title>
+        <v-card-text>
+          <v-select
+            :items="getClients()"
+            label="Selecione o Cliente"
+            item-text="name"
+            item-value="id"
+            v-model="orderForm.client"
+            :loading="isClientsLoading"
+            :disabled="isClientsLoading"
+          />
+          <v-select
+            :items="getProducts()"
+            label="Selecione o Produto"
+            item-text="name"
+            item-value="id"
+            v-model="orderForm.product"
+            :loading="isProductsLoading"
+            :disabled="isProductsLoading"
+            @update:modelValue="updateProductPrice"
+          />
+          <v-text-field label="Quantidade" v-model="orderForm.quantity" type="number" min="1" />
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeDialog">Cancelar</v-btn>
+          <v-btn color="primary" @click="saveOrder">Salvar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteDialog" max-width="500px">
+      <v-card>
+        <v-card-title>Confirmar Exclusão</v-card-title>
+        <v-card-text>
+          Tem certeza de que deseja excluir o pedido <strong>{{ orderToDelete?.id }}</strong
+          >?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeDeleteDialog">Cancelar</v-btn>
+          <v-btn color="error" @click="deleteOrder(orderToDelete.id)">Excluir</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
+</template>

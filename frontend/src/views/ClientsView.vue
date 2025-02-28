@@ -3,9 +3,9 @@ import { ref } from 'vue'
 import { useClients, useCreateClient, useEditClient, useDeleteClient } from '../hooks/useClients'
 
 const headers = [
-  { text: 'Nome', align: 'start', key: 'name', value: 'name' },
-  { text: 'Email', align: 'start', key: 'email', value: 'email' },
-  { text: 'Ação', key: 'action' },
+  { title: 'Nome', align: 'start', key: 'name', value: 'name' },
+  { title: 'Email', align: 'start', key: 'email', value: 'email' },
+  { title: 'Editar / Excluir', key: 'action' },
 ]
 
 const dialog = ref(false)

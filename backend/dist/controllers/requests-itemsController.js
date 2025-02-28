@@ -100,7 +100,12 @@ function updateRequestItemController(request, reply) {
             const { id } = request.params;
             const { request_id, product_id, quantity } = requestSchema.parse(request.body);
             const requestService = new requests_itemService_1.RequestsItemService();
-            const updatedRequest = yield requestService.update(id, request_id, product_id, quantity);
+            const updatedRequest = yield requestService.update(id, {
+                id,
+                request_id,
+                product_id,
+                quantity,
+            });
             return reply.send({
                 message: "Pedido atualizado com sucesso!",
                 updatedRequest,

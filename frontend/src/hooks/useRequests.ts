@@ -15,6 +15,13 @@ interface Order {
   id: number
 }
 
+interface OrderItem {
+  id: number
+  request_id: number
+  product_id: number
+  quantity: number
+}
+
 const API_URL = import.meta.env.VITE_API_URL
 const API_ORDERS = `${API_URL}/requests`
 const API_ORDER_ITEMS = `${API_URL}/requests-items`
@@ -28,7 +35,10 @@ const createOrder = async (clientId: number) => {
 }
 
 const editOrder = async (id: number, order: Order) => {
-  const { data } = await axios.put(`${API_ORDERS}/${id}`, order)
+  const { data } = await axios.put(`${API_ORDERS}/${id}`, {
+    id,
+    client_id: order.id,
+  })
   return data
 }
 
@@ -70,6 +80,36 @@ export function useEditOrder() {
     },
     onError: (error: AxiosError<ApiResponse>) => {
       toast.error(error.response?.data.error || 'Erro ao atualizar pedido.', {
+        position: 'top-right',
+      })
+    },
+  })
+}
+
+const editOrderItem = async (orderItem: OrderItem) => {
+  const { data } = await axios.put(`${API_ORDER_ITEMS}/${orderItem.request_id}`, {
+    id: orderItem.id,
+    request_id: orderItem.request_id,
+    product_id: orderItem.product_id,
+    quantity: orderItem.quantity
+  })
+  return data
+}
+
+export function useEditOrderItem() {
+  const queryClient = useQueryClient()
+  const toast = useToast()
+
+  return useMutation({
+    mutationFn: editOrderItem,
+    onSuccess: (data: OrderResponse) => {
+      queryClient.invalidateQueries({ queryKey: ['order-items'] })
+      toast.success(data.message || 'Item do pedido atualizado com sucesso!', {
+        position: 'top-right',
+      })
+    },
+    onError: (error: AxiosError<ApiResponse>) => {
+      toast.error(error.response?.data.error || 'Erro ao atualizar item do pedido.', {
         position: 'top-right',
       })
     },

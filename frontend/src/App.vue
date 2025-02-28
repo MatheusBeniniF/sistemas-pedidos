@@ -2,8 +2,6 @@
   <v-app>
     <v-app-bar app color="primary" dark>
       <v-toolbar-title>Sistema de Pedidos</v-toolbar-title>
-      <v-spacer />
-      <v-btn text>Login</v-btn>
     </v-app-bar>
 
     <v-navigation-drawer app>

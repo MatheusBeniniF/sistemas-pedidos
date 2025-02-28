@@ -105,7 +105,12 @@ export async function updateRequestItemController(
     const { id } = request.params as { id: number };
     const { request_id, product_id, quantity } = requestSchema.parse(request.body);
     const requestService = new RequestsItemService();
-    const updatedRequest = await requestService.update(id, request_id, product_id, quantity);
+    const updatedRequest = await requestService.update(id, {
+      id,
+      request_id,
+      product_id,
+      quantity,
+    });
 
     return reply.send({
       message: "Pedido atualizado com sucesso!",
