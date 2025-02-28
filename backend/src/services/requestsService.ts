@@ -1,6 +1,5 @@
 import { createConnection } from "../database";
 import * as mysql from "mysql2/promise";
-import { RequestsItemService } from "./requests-itemService";
 
 export class RequestService {
   async getAllProducts() {
@@ -81,11 +80,6 @@ export class RequestService {
         [id]
       );
 
-      if(deleteResult.serverStatus === 2) {
-        const requestsItemService = new RequestsItemService();
-        await requestsItemService.delete(id);
-      }
-      
       return deleteResult;
     } catch (error) {
       if (error instanceof Error) {

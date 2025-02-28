@@ -11,7 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RequestService = void 0;
 const database_1 = require("../database");
-const requests_itemService_1 = require("./requests-itemService");
 class RequestService {
     getAllProducts() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -80,10 +79,6 @@ class RequestService {
                     throw new Error("Pedido não encontrado");
                 }
                 const [deleteResult] = yield connection.execute("DELETE FROM requests WHERE id = ?", [id]);
-                if (deleteResult.serverStatus === 2) {
-                    const requestsItemService = new requests_itemService_1.RequestsItemService();
-                    yield requestsItemService.delete(id);
-                }
                 return deleteResult;
             }
             catch (error) {
