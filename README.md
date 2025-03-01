@@ -42,7 +42,7 @@ para copiar as variaveis necessarias.
 4. Navegue até a pasta raiz do projeto e execute o comando
 
 ```
-docker-compose up
+docker-compose up -d
 ```
 
 para subir o container do banco de dados.

@@ -20,7 +20,6 @@ const { data: orders, isLoading: isOrdersLoading, refetch } = useOrders()
 const { mutate: createOrderItem } = useCreateOrderItem()
 const { mutate: createRequest } = useCreateOrder()
 const { mutate: deleteRequest } = useDeleteOrder()
-const { data: orderItem, refetch: refetchOrderItem, orderId } = useOrderItem();
 
 const headers = [
   { title: 'ID', align: 'start', key: 'id', value: 'id' },

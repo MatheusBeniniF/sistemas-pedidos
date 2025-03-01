@@ -54,7 +54,6 @@ const openEditModal = (item) => {
 }
 
 const saveEdits = () => {
-
   const updatedItem = {
     id: selectedItem.value.id,
     request_id: selectedItem.value.request_id,
@@ -62,9 +61,7 @@ const saveEdits = () => {
     quantity: Number(newQuantity.value),
   }
 
-
   editOrderItem(updatedItem)
-
 
   isModalVisible.value = false
 }
@@ -80,7 +77,9 @@ const confirmDelete = () => {
 }
 
 const getProducts = () => {
-  return products.value ? products.value.map(product => `${product.name} - R$${product.price} - ${product.id}`) : []
+  return products.value
+    ? products.value.map((product) => `${product.name} - R$${product.price} - ${product.id}`)
+    : []
 }
 </script>
 
@@ -89,23 +88,32 @@ const getProducts = () => {
     <v-btn @click="$router.push('/pedidos')" class="mb-2">Voltar</v-btn>
     <h1>Itens do Pedido #{{ route.params.id }}</h1>
 
-    <v-progress-circular v-if="isLoading || isProductsLoading" indeterminate color="primary"></v-progress-circular>
+    <v-progress-circular
+      v-if="isLoading || isProductsLoading"
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
 
     <v-alert v-if="isError" type="error">Erro ao carregar itens do pedido</v-alert>
 
-    <v-alert v-if="isProductsLoading" type="info">
-      Carregando produtos...
-    </v-alert>
+    <v-alert v-if="isProductsLoading" type="info"> Carregando produtos... </v-alert>
 
-    <v-data-table v-if="!isLoading && !isError && !isProductsLoading && orderItems" :headers="itemsHeaders"
-      :items="orderItems">
+    <v-data-table
+      v-if="!isLoading && !isError && !isProductsLoading && orderItems"
+      :headers="itemsHeaders"
+      :items="orderItems"
+    >
       <template v-slot:item.product="{ item }">
         <span>{{ findProductById(item.product_id)?.name || 'Produto não encontrado' }}</span>
       </template>
       <template v-slot:item.action="{ item }">
-        <v-btn class="mx-1" size="x-small" color="primary" @click="openEditModal(item)">Editar</v-btn>
+        <v-btn class="mx-1" size="x-small" color="primary" @click="openEditModal(item)"
+          >Editar</v-btn
+        >
 
-        <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteModal(item)">Excluir</v-btn>
+        <v-btn class="mx-1" size="x-small" color="error" @click="openDeleteModal(item)"
+          >Excluir</v-btn
+        >
       </template>
     </v-data-table>
 
@@ -115,10 +123,19 @@ const getProducts = () => {
           <span class="headline">Editar Item do Pedido</span>
         </v-card-title>
         <v-card-text>
-          <v-select v-model="newProductId" :items="getProducts()" item-value="id"
-            label="Selecione o Produto"></v-select>
+          <v-select
+            v-model="newProductId"
+            :items="getProducts()"
+            item-value="id"
+            label="Selecione o Produto"
+          ></v-select>
 
-          <v-text-field v-model="newQuantity" label="Quantidade" type="number" min="1"></v-text-field>
+          <v-text-field
+            v-model="newQuantity"
+            label="Quantidade"
+            type="number"
+            min="1"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-btn color="primary" @click="saveEdits">Salvar</v-btn>
